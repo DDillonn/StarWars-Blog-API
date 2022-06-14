@@ -38,6 +38,18 @@ def get_all_user():
     return jsonify(all_user), 200
 
 
+@app.route('/user/favorites', methods=['GET'])
+def get_all_favorites():
+    favorites_query = Favorites.query.all()
+    all_favorites = list(map(lambda favorites: favorites.serialize(), favorites_query))
+    return jsonify(all_favorites), 200
+
+@app.route('/user/favorites/<int:favorites_id>', methods=['GET'])
+def get_favorites(favorites_id):
+    favorites = Favorites.query.get(favorites)
+    return jsonify(favorites.serialize()), 200
+
+
 @app.route('/people', methods=['GET'])
 def get_all_people():
     people_query = People.query.all()
@@ -49,7 +61,7 @@ def get_people(people_id):
     people = People.query.get(people_id)
     return jsonify(people.serialize()), 200
 
-@app.route('/people', methods=['POST'])
+@app.route('/favorites/people', methods=['POST'])
 def add_new_people():
     request_body = request.data
     dictionary = json.loads(request_body)
@@ -57,7 +69,7 @@ def add_new_people():
     print("Incoming request with the following body", dictionary)
     return flask.jsonify(people)
 
-@app.route('/people/<int:position>', methods=['DELETE'])
+@app.route('/favorites/people/<int:position>', methods=['DELETE'])
 def delete_people(position):
     print("This is the position to delete: ",position)
     people.pop(position)
@@ -75,7 +87,7 @@ def get_planets(planets_id):
     planets = Planets.query.get(planets_id)
     return jsonify(planets.serialize()), 200
 
-@app.route('/planets', methods=['POST'])
+@app.route('/favorites/planets', methods=['POST'])
 def add_new_planets():
     request_body = request.data
     dictionary = json.loads(request_body)
@@ -83,23 +95,12 @@ def add_new_planets():
     print("Incoming request with the following body", dictionary)
     return flask.jsonify(planets)
 
-@app.route('/planets/<int:position>', methods=['DELETE'])
+@app.route('/favorites/planets/<int:position>', methods=['DELETE'])
 def delete_planets(position):
     print("This is the position to delete: ",position)
     planets.pop(position)
     return flask.jsonify(planets)
 
-
-@app.route('/user/favorites', methods=['GET'])
-def get_all_favorites():
-    favorites_query = Favorites.query.all()
-    all_favorites = list(map(lambda favorites: favorites.serialize(), favorites_query))
-    return jsonify(all_favorites), 200
-
-@app.route('/user/favorites/<int:favorites_id>', methods=['GET'])
-def get_favorites(favorites_id):
-    favorites = Favorites.query.get(favorites)
-    return jsonify(favorites.serialize()), 200
 
 
 # this only runs if `$ python src/main.py` is executed
